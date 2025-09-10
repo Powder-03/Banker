@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.core.database import get_db
 from app.services.branch_service import BranchService
 from app.schemas.branch import Branch, BranchDetail
+from app.utils.pagination import PaginatedResponse
 
 router = APIRouter()
 
@@ -15,7 +16,7 @@ async def get_branch_by_ifsc(ifsc: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Branch not found")
     return branch
 
-@router.get("/", response_model=List[Branch])
+@router.get("/", response_model=PaginatedResponse[Branch])
 async def search_branches(
     q: Optional[str] = Query(None, description="Search in IFSC, branch name, address, or bank name"),
     city: Optional[str] = Query(None, description="Filter by city"),
@@ -37,9 +38,14 @@ async def search_branches(
         skip=skip, 
         limit=limit
     )
-    return branches
+    return PaginatedResponse(
+        items=branches,
+        total=total,
+        skip=skip,
+        limit=limit
+    )
 
-@router.get("/bank/{bank_id}", response_model=List[Branch])
+@router.get("/bank/{bank_id}", response_model=PaginatedResponse[Branch])
 async def get_branches_by_bank(
     bank_id: int,
     skip: int = Query(0, ge=0),
@@ -48,6 +54,14 @@ async def get_branches_by_bank(
 ):
     """Get all branches for a specific bank"""
     branches, total = await BranchService.get_branches_by_bank_id(db, bank_id, skip, limit)
+    if not branches:
+        raise HTTPException(status_code=404, detail="Bank not found or no branches found")
+    return PaginatedResponse(
+        items=branches,
+        total=total,
+        skip=skip,
+        limit=limit
+    )
     if total == 0:
         raise HTTPException(status_code=404, detail="No branches found for this bank")
     return branches

@@ -1,0 +1,87 @@
+-- Clean Indian Bank Database Schema
+-- Contains only essential tables and data for the REST API
+
+-- Banks table
+CREATE TABLE banks (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Branches table
+CREATE TABLE branches (
+    ifsc VARCHAR(11) PRIMARY KEY,
+    bank_id BIGINT NOT NULL,
+    branch VARCHAR(255),
+    address VARCHAR(500),
+    city VARCHAR(100),
+    district VARCHAR(100),
+    state VARCHAR(50),
+    FOREIGN KEY (bank_id) REFERENCES banks(id)
+);
+
+-- Create indexes for better query performance
+CREATE INDEX idx_branches_bank_id ON branches(bank_id);
+CREATE INDEX idx_branches_city ON branches(city);
+CREATE INDEX idx_branches_state ON branches(state);
+CREATE INDEX idx_branches_district ON branches(district);
+
+-- Essential Indian Banks Data
+INSERT INTO banks (id, name) VALUES
+(1, 'STATE BANK OF INDIA'),
+(2, 'PUNJAB NATIONAL BANK'),
+(3, 'CANARA BANK'),
+(4, 'BANK OF BARODA'),
+(5, 'HDFC BANK'),
+(6, 'BANK OF INDIA'),
+(7, 'CENTRAL BANK OF INDIA'),
+(8, 'ICICI BANK LIMITED'),
+(9, 'UNION BANK OF INDIA'),
+(10, 'SYNDICATE BANK'),
+(11, 'ALLAHABAD BANK'),
+(12, 'INDIAN OVERSEAS BANK'),
+(13, 'AXIS BANK'),
+(14, 'UCO BANK'),
+(15, 'ANDHRA BANK'),
+(16, 'IDBI BANK'),
+(17, 'YES BANK'),
+(18, 'INDIAN BANK'),
+(19, 'ORIENTAL BANK OF COMMERCE'),
+(20, 'CORPORATION BANK'),
+(21, 'UNITED BANK OF INDIA'),
+(22, 'VIJAYA BANK'),
+(23, 'BANK OF MAHARASHTRA'),
+(24, 'STATE BANK OF HYDERABAD'),
+(25, 'DENA BANK'),
+(26, 'PUNJAB AND SIND BANK'),
+(27, 'STATE BANK OF BIKANER AND JAIPUR'),
+(28, 'STATE BANK OF PATIALA'),
+(29, 'FEDERAL BANK'),
+(30, 'STATE BANK OF TRAVANCORE'),
+(31, 'STATE BANK OF MYSORE'),
+(32, 'KOTAK MAHINDRA BANK LIMITED'),
+(33, 'INDUSIND BANK'),
+(34, 'JAMMU AND KASHMIR BANK LIMITED'),
+(35, 'SOUTH INDIAN BANK'),
+(36, 'KARNATAKA BANK LIMITED'),
+(37, 'KARUR VYSYA BANK'),
+(38, 'THE ANDHRA PRADESH STATE COOPERATIVE BANK LIMITED'),
+(39, 'PRAGATHI KRISHNA GRAMIN BANK'),
+(40, 'ING VYSYA BANK'),
+(41, 'KARNATAKA VIKAS GRAMEENA BANK'),
+(42, 'BANDHAN BANK LIMITED'),
+(43, 'KERALA GRAMIN BANK'),
+(44, 'CITY UNION BANK LIMITED'),
+(45, 'THE SHAMRAO VITHAL COOPERATIVE BANK'),
+(46, 'ANDHRA PRAGATHI GRAMEENA BANK'),
+(47, 'THE RAJASTHAN STATE COOPERATIVE BANK LIMITED'),
+(48, 'TAMILNAD MERCANTILE BANK LIMITED'),
+(49, 'LAXMI VILAS BANK'),
+(50, 'CATHOLIC SYRIAN BANK LIMITED'),
+(60, 'ABHYUDAYA COOPERATIVE BANK LIMITED'),
+(64, 'STANDARD CHARTERED BANK'),
+(78, 'HSBC BANK'),
+(87, 'CITI BANK'),
+(104, 'IDFC BANK LIMITED');
+
+-- Note: Branch data will be loaded from CSV file during application startup
+-- This keeps the SQL file minimal while maintaining all essential structure
